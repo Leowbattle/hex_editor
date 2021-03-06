@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,62 +15,43 @@ class HexEditorApp extends StatelessWidget {
     return MaterialApp(
       theme: Theme.of(context).copyWith(),
       home: Scaffold(
-        body: Component(),
+        body: HexEditor(),
       ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class Component extends StatelessWidget {
+class HexEditor extends StatefulWidget {
+  @override
+  _HexEditorState createState() => _HexEditorState();
+}
+
+class _HexEditorState extends State<HexEditor> {
+  ScrollController sc = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return AppButton(
-      child: Text("Click me"),
-      onPressed: () async {
-        showMenu<Object>(
-          context: context,
-          position: RelativeRect.fromLTRB(0, 0, 100, 100),
-          items: [
-            PopupMenuItem(
-              child: Text("Item"),
-              height: 0,
-            ),
-            PopupMenuItem(
-              child: PopupMenuButton(
-                child: Text("Click me"),
-                itemBuilder: (_) {
-                  return [
-                    PopupMenuItem(
-                      child: Text("Item"),
-                      height: 0,
-                    )
-                  ];
-                },
-              ),
-              height: 0,
-            ),
-          ],
-        );
-        // showDialog(
-        //   context: context,
-        //   builder: (_) => AlertDialog(
-        //     title: Row(
-        //       children: [Icon(Icons.warning), Text(" Avast!")],
-        //     ),
-        //     actions: [
-        //       AppButton(
-        //         child: Text("Yes"),
-        //         onPressed: () {},
-        //       ),
-        //       AppButton(
-        //         child: Text("No"),
-        //         onPressed: () {},
-        //       )
-        //     ],
-        //   ),
-        // );
-      },
+    return Scrollbar(
+      isAlwaysShown: true,
+      thickness: 20,
+      radius: Radius.zero,
+      child: ListView(
+        children: [
+          for (int i = 0; i < 100; i++)
+            Row(
+              children: [
+                Text(
+                  (i * 16).toRadixString(16).padLeft(8, '0'),
+                  style: TextStyle(fontFeatures: [
+                    FontFeature.tabularFigures(),
+                    FontFeature.slashedZero()
+                  ]),
+                ),
+              ],
+            )
+        ],
+      ),
     );
   }
 }
