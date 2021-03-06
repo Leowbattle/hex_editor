@@ -36,22 +36,37 @@ class _HexEditorState extends State<HexEditor> {
       isAlwaysShown: true,
       thickness: 20,
       radius: Radius.zero,
-      child: ListView(
-        children: [
-          for (int i = 0; i < 100; i++)
-            Row(
-              children: [
-                Text(
-                  (i * 16).toRadixString(16).padLeft(8, '0'),
-                  style: TextStyle(fontFeatures: [
-                    FontFeature.tabularFigures(),
-                    FontFeature.slashedZero()
-                  ]),
-                ),
-              ],
-            )
-        ],
+      child: ListView.builder(
+        itemBuilder: (_, i) {
+          return Text(
+            (i * 16).toRadixString(16).toUpperCase().padLeft(8, '0'),
+            style: TextStyle(fontFamily: "Consolas"),
+          );
+        },
+        padding: EdgeInsets.all(5),
+        itemCount: 1000,
       ),
     );
+    // return Scrollbar(
+    //   isAlwaysShown: true,
+    //   thickness: 20,
+    //   radius: Radius.zero,
+    //   child: ListView(
+    //     children: [
+    //       for (int i = 0; i < 100; i++)
+    //         Row(
+    //           children: [
+    //             Text(
+    //               (i * 16).toRadixString(16).padLeft(8, '0'),
+    //               style: TextStyle(fontFeatures: [
+    //                 FontFeature.tabularFigures(),
+    //                 FontFeature.slashedZero()
+    //               ]),
+    //             ),
+    //           ],
+    //         )
+    //     ],
+    //   ),
+    // );
   }
 }
