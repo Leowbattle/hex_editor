@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'app_button.dart';
-import 'app_menu.dart';
+import 'package:hex_editor/app_button.dart';
 
 void main() {
   runApp(HexEditorApp());
@@ -9,59 +10,65 @@ void main() {
 class HexEditorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp(
-      color: Colors.white,
-      textStyle: TextStyle(color: Colors.black),
-      builder: (BuildContext bc, __) {
-        return Container(
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AppMenu(
-                items: [
-                  AppMenuItem(
-                      label: AppButton(
-                    child: Text("File"),
-                    onPressed: () {},
-                  )),
-                ],
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      for (int i = 0; i < 10; i++)
-                        MaterialButton(
-                          child: Text("Button $i"),
-                          onPressed: () {
-                            print("Button $i was pressed");
-                          },
-                          elevation: 0,
-                          hoverElevation: 0,
-                          highlightElevation: 0,
-                          splashColor: Colors.transparent,
-                          color: Color(0xffe0e0e0),
-                        )
-                      // AppButton(
-                      //   child: Text("Button $i"),
-                      //   onPressed: () {
-                      //     print("Button $i was pressed");
-                      //   },
-                      // )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-      },
+    return MaterialApp(
+      theme: Theme.of(context).copyWith(),
+      home: Scaffold(
+        body: Component(),
+      ),
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Component extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AppButton(
+      child: Text("Click me"),
+      onPressed: () async {
+        showMenu<Object>(
+          context: context,
+          position: RelativeRect.fromLTRB(0, 0, 100, 100),
+          items: [
+            PopupMenuItem(
+              child: Text("Item"),
+              height: 0,
+            ),
+            PopupMenuItem(
+              child: PopupMenuButton(
+                child: Text("Click me"),
+                itemBuilder: (_) {
+                  return [
+                    PopupMenuItem(
+                      child: Text("Item"),
+                      height: 0,
+                    )
+                  ];
+                },
+              ),
+              height: 0,
+            ),
+          ],
+        );
+        // showDialog(
+        //   context: context,
+        //   builder: (_) => AlertDialog(
+        //     title: Row(
+        //       children: [Icon(Icons.warning), Text(" Avast!")],
+        //     ),
+        //     actions: [
+        //       AppButton(
+        //         child: Text("Yes"),
+        //         onPressed: () {},
+        //       ),
+        //       AppButton(
+        //         child: Text("No"),
+        //         onPressed: () {},
+        //       )
+        //     ],
+        //   ),
+        // );
+      },
     );
   }
 }
