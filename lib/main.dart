@@ -3,9 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hex_editor/app_button.dart';
 
 void main() {
   runApp(HexEditorApp());
