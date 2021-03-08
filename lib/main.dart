@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(HexEditorApp());
@@ -28,7 +30,6 @@ class HexEditor extends StatefulWidget {
 }
 
 class _HexEditorState extends State<HexEditor> {
-  static const double addressWidth = 80;
   static const double bytePadding = 5;
 
   static const TextStyle textStyle = TextStyle(
@@ -105,26 +106,146 @@ class _HexEditorState extends State<HexEditor> {
     );
   }
 
+  OverlayEntry? oe;
+  void pointerDown(PointerDownEvent event) async {
+    oe?.remove();
+    oe = null;
+
+    if (event.buttons == kSecondaryButton) {
+      final overlay = Overlay.of(context)!;
+
+      GlobalKey key = GlobalKey();
+      GlobalKey key2 = GlobalKey();
+
+      oe = OverlayEntry(
+        builder: (_) {
+          return Positioned(
+            width: 150,
+            top: event.position.dy,
+            left: event.position.dx,
+            child: Material(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Blah blah"),
+                  MouseRegion(
+                    key: key,
+                    onEnter: (event) {
+                      var rb =
+                          key.currentContext?.findRenderObject() as RenderBox?;
+                      if (rb == null) {
+                        return;
+                      }
+                      var pos = rb.localToGlobal(Offset.zero);
+
+                      var oe2 = OverlayEntry(builder: (_) {
+                        return Positioned(
+                          top: pos.dy,
+                          left: pos.dx + rb.size.width,
+                          width: 150,
+                          child: Material(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Blah blah blah"),
+                                MouseRegion(
+                                  key: key2,
+                                  onEnter: (event) {
+                                    var rb = key2.currentContext
+                                        ?.findRenderObject() as RenderBox?;
+                                    if (rb == null) {
+                                      return;
+                                    }
+                                    var pos = rb.localToGlobal(Offset.zero);
+
+                                    overlay.insert(OverlayEntry(builder: (_) {
+                                      return Positioned(
+                                        top: pos.dy,
+                                        left: pos.dx + rb.size.width,
+                                        width: 150,
+                                        child: Material(
+                                          child: Text("Submenu 2"),
+                                          elevation: 4,
+                                          shape: Border.fromBorderSide(
+                                              BorderSide(color: Colors.blue)),
+                                        ),
+                                      );
+                                    }));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("Submenu"),
+                                      Spacer(),
+                                      Icon(Icons.arrow_forward)
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            elevation: 4,
+                            shape: Border.fromBorderSide(
+                                BorderSide(color: Colors.blue)),
+                          ),
+                        );
+                      });
+
+                      overlay.insert(oe2);
+                    },
+                    child: Row(
+                      children: [
+                        Text("Hello"),
+                        Spacer(),
+                        Icon(Icons.arrow_forward)
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 1,
+                    color: Colors.blue,
+                  ),
+                  MaterialButton(
+                    child: Text("Click me"),
+                    onPressed: () {
+                      print("I was clicked :)");
+                    },
+                  )
+                ],
+              ),
+              elevation: 4,
+              shape: Border.fromBorderSide(BorderSide(color: Colors.blue)),
+            ),
+          );
+        },
+      );
+
+      overlay.insert(oe!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: textStyle,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          createHeader(),
-          Expanded(
-            child: Scrollbar(
-              isAlwaysShown: true,
-              thickness: 20,
-              radius: Radius.zero,
-              child: ListView.builder(
-                itemBuilder: createRow,
-                itemCount: 1000,
+      child: Listener(
+        onPointerDown: pointerDown,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            createHeader(),
+            Expanded(
+              child: Scrollbar(
+                isAlwaysShown: true,
+                thickness: 20,
+                radius: Radius.zero,
+                child: ListView.builder(
+                  itemBuilder: createRow,
+                  itemCount: 1000,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
